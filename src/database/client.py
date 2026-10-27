@@ -7,9 +7,10 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams, Distance
 
 from src.core.settings import QdrantSettings
+from src.database.base import BaseDatabaseClient
 
 
-class QdrantDatabaseClient:
+class QdrantDatabaseClient(BaseDatabaseClient):
     def __init__(self, settings: QdrantSettings, embedding: Embeddings):
         self.collection_name = settings.COLLECTION
         self.host = settings.HOST

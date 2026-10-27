@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 
 class AgentSettings(BaseSettings):
     """Agent settings."""
+    PROVIDER: str = config("AGENT_PROVIDER")
     HOST: str = config("AGENT_HOST")
     MODEL: str = config("AGENT_MODEL")
     MODEL_TEMPERATURE: float = config("AGENT_MODEL_TEMPERATURE", default=0.0, cast=float)
