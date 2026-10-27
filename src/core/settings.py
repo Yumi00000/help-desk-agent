@@ -27,5 +27,7 @@ class Settings:
     agent = AgentSettings()
     qdrant = QdrantSettings()
     embedding = EmbeddingSettings()
+    system_prompt_path: str = config("SYSTEM_PROMPT_PATH")
+
 
 settings = Settings()
