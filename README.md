@@ -30,10 +30,11 @@ Settings are read from `.env` with `python-decouple`. Put comments on their own 
 |---|---|---|---|
 | `AGENT_HOST` | yes | — | Ollama host, e.g. `http://localhost:11434` |
 | `AGENT_MODEL` | yes | — | LLM model name, e.g. `qwen3:4b` |
-| `AGENT_TEMPERATURE` | no | `0.0` | LLM model temperature |
+| `AGENT_MODEL_TEMPERATURE` | no | `0.0` | LLM model temperature |
 | `QDRANT_HOST` | yes | — | Qdrant host, e.g. `localhost` |
 | `QDRANT_PORT` | no | `6333` | Qdrant REST port |
 | `QDRANT_COLLECTION` | yes | — | Qdrant collection name |
+| `QDRANT_VECTOR_SIZE` | no | `1024` | Vector size of the Qdrant collection |
 | `EMBEDDING_MODEL` | yes | — | Embedding model, e.g. `Qwen/Qwen3-Embedding-0.6B` |
 | `EMBEDDING_DIMENSION` | no | `1024` | Vector size, must match the embedding model |
 
@@ -54,10 +55,10 @@ QDRANT_HOST=localhost
 # Qdrant port - default 6333
 QDRANT_PORT=6333
 QDRANT_COLLECTION=
-
+QDRANT_VECTOR_SIZE=1024
 # Embedding Settings
 # Name of embedding model
 EMBEDDING_MODEL=Qwen/Qwen3-Embedding-0.6B
-#Size of Vector
+#Embedding DIMENSION
 EMBEDDING_DIMENSION=1024
 ```
