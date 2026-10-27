@@ -31,11 +31,14 @@
     ├── scripts/
     │   └── add_docs_to_db.py      # Adds documents to Qdrant
     ├── services/
+    │   ├── calculations/
+    │   │   └── calculate_refunds.py # CalculateRefunds: refund formula from the cancellation rules
     │   └── data_management/
     │       └── load_booking.py    # BookingLoader: reads bookings.json, finds a booking by id
     └── tools/
         ├── search.py              # search_policies tool
-        └── get_booking.py         # get_booking tool
+        ├── get_booking.py         # get_booking tool
+        └── calculate_refund.py    # calculate_refund tool
 ```
 
 ## Agent tools
@@ -44,6 +47,20 @@
 |---|---|---|
 | `search_policies` | `query` | The most relevant parts of the policy documents (from Qdrant) |
 | `get_booking` | `booking_id`, e.g. `CW-1001` | The details of one booking, or `Booking ... not found.` |
+| `calculate_refund` | `booking_id`, e.g. `CW-1001` | Refund if the booking is cancelled now: hours before start, refund %, rental / deposit / booking fee refund and total in EUR, or `Booking ... not found.` |
+
+### Refund rules (`calculate_refund`)
+
+The amount is calculated by code, not by the model, with the fixed current date **2026-06-10 09:00 +02:00**.
+
+| Booking | Refund |
+|---|---|
+| Status `in_progress`, `completed` or `cancelled` | Nothing |
+| `confirmed`, 48 hours or more before the start | 100% of the rental price |
+| `confirmed`, 24 to 48 hours before the start | 50% of the rental price |
+| `confirmed`, less than 24 hours before the start | 0% of the rental price |
+
+The booking fee is never refunded. The deposit is refunded in full when a `confirmed` booking is cancelled.
 
 ## Data
 

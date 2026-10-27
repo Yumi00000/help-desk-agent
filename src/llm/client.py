@@ -9,7 +9,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from src.core.settings import AgentSettings
 from src.database import BaseDatabaseClient
 from src.prompts import read_system_prompt
-from src.tools import GetBookingTool, SearchPoliciesTool
+from src.tools import CalculateRefundTool, GetBookingTool, SearchPoliciesTool
 
 
 class AgentClient:
@@ -28,6 +28,7 @@ class AgentClient:
             tools=[
                 SearchPoliciesTool(database=database),
                 GetBookingTool(),
+                CalculateRefundTool(),
             ],
             checkpointer=InMemorySaver()
         )
