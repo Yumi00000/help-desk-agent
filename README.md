@@ -1,5 +1,7 @@
 # help-desk-agent
 
+![Tests](https://github.com/Yumi00000/help-desk-agent/actions/workflows/tests.yml/badge.svg)
+
 ## Usage
 
 ### 1. Install
@@ -50,6 +52,8 @@ pytest
 
 Runs all tests in `src/tests/` (tools, refund rules, agent loop with a fake model). No Ollama, Qdrant or `.env` needed: without `.env`, `conftest.py` uses the values from `.env.example`.
 
+The tests also run on GitHub Actions on every push and pull request (`.github/workflows/tests.yml`: Python 3.14, `pip install -r requirements.txt`, `pytest`). Results are in the **Actions** tab of the repository.
+
 ### Evaluation
 
 ```bash
@@ -89,6 +93,7 @@ To add a question, add a line to `eval/questions.json`:
 
 ```
 .
+├── .github/workflows/tests.yml    # GitHub Actions: runs pytest on every push and pull request
 ├── main.py                        # CLI: chat with the agent (streaming), rebuild the Qdrant collection
 ├── requirements.txt               # Python dependencies
 ├── pytest.ini                     # pytest settings (test folder, import path)
