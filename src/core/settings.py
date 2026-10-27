@@ -22,12 +22,17 @@ class EmbeddingSettings(BaseSettings):
     MODEL: str = config("EMBEDDING_MODEL")
     DIMENSION: int = config("EMBEDDING_DIMENSION", default=1024, cast=int)
 
+class ChunkSettings(BaseSettings):
+    CHUNK_SIZE: int = config("CHUNK_SIZE", default=1000, cast=int)
+    CHUNK_OVERLAP: int = config("CHUNK_OVERLAP", default=0, cast=int)
+
 
 class Settings:
     """Settings."""
     agent = AgentSettings()
     qdrant = QdrantSettings()
     embedding = EmbeddingSettings()
+    chunk = ChunkSettings()
     system_prompt_path: str = config("SYSTEM_PROMPT_PATH")
 
 
