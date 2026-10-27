@@ -15,10 +15,14 @@ class GetBookingTool(BaseTool):
     name: str = "get_booking"
     description: str = "Get the details of one booking by its booking number: status, bike type, dates, prices and payment."
     args_schema: type[BaseModel] = GetBookingInput
-    booking_loader: BookingLoader =BookingLoader(DataSettings())
+    booking_loader: BookingLoader = BookingLoader(DataSettings())
 
     def _run(self, booking_id: str) -> str:
-        booking = self.booking_loader.get_booking_by_id(booking_id)
+        booking_id = booking_id.strip().upper()
+        try:
+            booking = self.booking_loader.get_booking_by_id(booking_id)
+        except FileNotFoundError:
+            return json.dumps({"id": None, "error": "Booking data is not available. Please contact the staff."})
         if booking is None:
             return json.dumps({"id": None, "error": f"Booking {booking_id} not found."})
         return json.dumps(booking)
