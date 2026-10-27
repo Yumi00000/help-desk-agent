@@ -2,25 +2,88 @@
 
 ## Usage
 
-Before running:
-
-- Ollama running with the models from `.env`: `ollama pull qwen3:4b` and `ollama pull qwen3-embedding:0.6b`
-- Qdrant running: `docker run -d --name qdrant -p 6333:6333 -p 6334:6334 -v qdrant_storage:/qdrant/storage qdrant/qdrant`
-- `.env` created from `.env.example`
+### 1. Install
 
 ```bash
-python main.py                           # show help
-python main.py --update-db               # rebuild the Qdrant collection from data/policies
-python main.py --start-chat              # chat with the agent
-python main.py --update-db --start-chat  # rebuild the collection, then chat
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env               # then fill in QDRANT_COLLECTION
 ```
 
-| Option | What it does |
-|---|---|
-| `--update-db` | Deletes the Qdrant collection and loads all files from `data/policies/` again (chunk → embed → store) |
-| `--start-chat` | Starts a chat. Answers are streamed token by token. The agent remembers earlier questions in the same chat |
+### 2. Start Ollama and Qdrant
 
-In the chat, type `/exit` or press Ctrl+C / Ctrl+D to quit. Run `--update-db` once before the first chat, and again after changing the policy files.
+```bash
+ollama pull qwen3:4b               # agent model (AGENT_MODEL)
+ollama pull qwen3-embedding:0.6b   # embedding model (EMBEDDING_MODEL)
+docker run -d --name qdrant -p 6333:6333 -p 6334:6334 -v qdrant_storage:/qdrant/storage qdrant/qdrant
+```
+
+Later, `docker start qdrant` / `docker stop qdrant` start and stop the same container. Qdrant dashboard: http://localhost:6333/dashboard
+
+### 3. Load the policy documents (once)
+
+```bash
+python main.py --update-db
+```
+
+### 4. Chat with the agent
+
+```bash
+python main.py --start-chat
+```
+
+Answers are streamed token by token, and the agent remembers earlier questions in the same chat. Type `/exit` or press Ctrl+C / Ctrl+D to quit.
+
+| Command | What it does |
+|---|---|
+| `python main.py` | Shows help |
+| `python main.py --update-db` | Deletes the Qdrant collection and loads all files from `data/policies/` again (chunk → embed → store) |
+| `python main.py --start-chat` | Starts a chat |
+| `python main.py --update-db --start-chat` | Rebuilds the collection, then starts a chat |
+
+### Tests
+
+```bash
+pytest
+```
+
+Runs all tests in `src/tests/` (tools, refund rules, agent loop with a fake model). No Ollama, Qdrant or `.env` needed: without `.env`, `conftest.py` uses the values from `.env.example`.
+
+### Evaluation
+
+```bash
+python -m eval.run_eval
+```
+
+Asks the real agent every question in `eval/questions.json` and writes `eval/results.md` with the pass count. Needs Ollama, Qdrant and loaded documents. Takes a few minutes.
+
+To add a question, add a line to `eval/questions.json`:
+
+```json
+{"question": "...", "tool": "calculate_refund", "expected": "340"}
+```
+
+`tool` must be called (`null` = no tool required), `expected` must appear in the answer.
+
+### Common tasks
+
+| Task | How |
+|---|---|
+| Policy files changed | `python main.py --update-db` |
+| Use another model | Change `AGENT_MODEL` in `.env`, run `ollama pull <model>` |
+| Change the agent's instructions | Edit `src/prompts/SYSTEM_PROMPT.md` |
+| Add a tool | Add it to `src/tools/`, export it in `src/tools/__init__.py`, add it to `tools=[...]` in `src/llm/client.py`, describe it in the system prompt |
+
+### Troubleshooting
+
+| Error | Fix |
+|---|---|
+| `UndefinedValueError: ... not found` | Create `.env` from `.env.example` |
+| `Connection refused` on port 6333 | Start Qdrant: `docker start qdrant` |
+| `Connection refused` on port 11434 | Start Ollama: `ollama serve` |
+| `model "..." not found, try pulling it first` | `ollama pull <model>` — name must match `.env` |
+| Agent answers "contact the staff" to every policy question | Documents not loaded: `python main.py --update-db` |
 
 ## Code structure
 
@@ -28,7 +91,13 @@ In the chat, type `/exit` or press Ctrl+C / Ctrl+D to quit. Run `--update-db` on
 .
 ├── main.py                        # CLI: chat with the agent (streaming), rebuild the Qdrant collection
 ├── requirements.txt               # Python dependencies
+├── pytest.ini                     # pytest settings (test folder, import path)
+├── conftest.py                    # Uses .env.example values in tests when .env is missing
 ├── .env.example                   # Example environment variables (copy to .env)
+├── eval/
+│   ├── questions.json             # Evaluation questions with expected tool and answer
+│   ├── run_eval.py                # Runs the agent on all questions
+│   └── results.md                 # Results of the last evaluation run
 ├── data/                          # Source data for the agent
 │   ├── bookings.json              # Sample bike rental bookings
 │   └── policies/
@@ -46,7 +115,8 @@ In the chat, type `/exit` or press Ctrl+C / Ctrl+D to quit. Run `--update-db` on
     ├── embeddings/
     │   └── client.py              # Embedding model (Ollama)
     ├── llm/
-    │   └── client.py              # Agent (Ollama LLM + tools)
+    │   ├── client.py              # Agent (Ollama LLM + tools), invoke / stream
+    │   └── middleware.py          # Turns tool calls written as text into real tool calls
     ├── prompts/
     │   ├── reader.py              # Reads the system prompt
     │   └── SYSTEM_PROMPT.md       # System prompt for the agent
@@ -57,6 +127,9 @@ In the chat, type `/exit` or press Ctrl+C / Ctrl+D to quit. Run `--update-db` on
     │   │   └── calculate_refunds.py # CalculateRefunds: refund formula from the cancellation rules
     │   └── data_management/
     │       └── load_booking.py    # BookingLoader: reads bookings.json, finds a booking by id
+    ├── tests/
+    │   ├── agent/test_agent.py    # Agent loop with a fake model
+    │   └── tools/                 # Tool tests: bookings, refunds, search
     └── tools/
         ├── search.py              # search_policies tool
         ├── get_booking.py         # get_booking tool
@@ -69,7 +142,7 @@ In the chat, type `/exit` or press Ctrl+C / Ctrl+D to quit. Run `--update-db` on
 |---|---|---|
 | `search_policies` | `query` | The most relevant parts of the policy documents (from Qdrant) |
 | `get_booking` | `booking_id`, e.g. `CW-1001` | The details of one booking, or `Booking ... not found.` |
-| `calculate_refund` | `booking_id`, e.g. `CW-1001` | Refund if the booking is cancelled now: hours before start, refund %, rental / deposit / booking fee refund and total in EUR, or `Booking ... not found.` |
+| `calculate_refund` | `booking_id`, e.g. `CW-1001`; optional `days_from_now` (1 = tomorrow) | Refund if the booking is cancelled now or in N days: hours before start, refund %, rental / deposit / booking fee refund and total in EUR, or `Booking ... not found.` |
 
 ### Refund rules (`calculate_refund`)
 

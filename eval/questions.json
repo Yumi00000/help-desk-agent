@@ -1,0 +1,13 @@
+[
+  {"question": "What time do you open on Saturday?", "tool": "search_policies", "expected": "8"},
+  {"question": "How much is an e-bike for a whole day?", "tool": "search_policies", "expected": "40"},
+  {"question": "What is the deposit for a city bike?", "tool": "search_policies", "expected": "50"},
+  {"question": "Can my 14-year-old rent an e-bike?", "tool": "search_policies", "expected": "16"},
+  {"question": "What is the status of booking CW-1005?", "tool": "get_booking", "expected": "cancel"},
+  {"question": "Show me booking CW-9999", "tool": "get_booking", "expected": "not found"},
+  {"question": "I want to cancel booking CW-1002. How much will I get back?", "tool": "calculate_refund", "expected": "340"},
+  {"question": "How much do I get back if I cancel booking CW-1003 now?", "tool": "calculate_refund", "expected": "50"},
+  {"question": "If I cancel booking CW-1001 tomorrow, how much will I get back?", "tool": "calculate_refund", "expected": "90"},
+  {"question": "What is the capital of Australia?", "tool": null, "expected": "staff"},
+  {"question": "Can you recommend a good restaurant near the park?", "tool": null, "expected": "staff"}
+]
