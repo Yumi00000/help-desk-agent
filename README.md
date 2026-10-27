@@ -6,7 +6,13 @@
 .
 ├── main.py                        # Entry point
 ├── requirements.txt               # Python dependencies
-├── .env.exempel                   # Example environment variables (copy to .env)
+├── .env.example                   # Example environment variables (copy to .env)
+├── data/                          # Source data for the agent
+│   ├── bookings.json              # Sample bike rental bookings
+│   └── policies/
+│       ├── cancellations.md       # Cancellation and refund rules
+│       ├── faq.md                 # Frequently asked questions
+│       └── prices.md              # Rental prices and fees
 └── src/
     ├── core/
     │   └── settings.py            # App settings (Agent, Qdrant, Embedding, Chunk), read from .env
@@ -24,14 +30,8 @@
     │   └── SYSTEM_PROMPT.md       # System prompt for the agent
     ├── scripts/
     │   └── add_docs_to_db.py      # Adds documents to Qdrant
-    ├── tools/
-    │   └── search.py              # search_policies tool
-    └── data/                      # Source data for the agent
-        ├── bookings.json          # Sample bike rental bookings
-        └── policies/
-            ├── cancellations.md   # Cancellation and refund rules
-            ├── faq.md             # Frequently asked questions
-            └── prices.md          # Rental prices and fees
+    └── tools/
+        └── search.py              # search_policies tool
 ```
 
 ## Data
@@ -40,10 +40,10 @@ CityWheels is a made-up bike rental shop. These files hold the data for its help
 
 | File | What it holds |
 | --- | --- |
-| `src/data/policies/prices.md` | Bike types, rental prices, add-ons, deposits and late return fees. |
-| `src/data/policies/cancellations.md` | Rules for cancelling or changing a booking, and for refunds. |
-| `src/data/policies/faq.md` | Answers to common questions: opening hours, age limits, payment, what to do when something goes wrong. |
-| `src/data/bookings.json` | Example bookings. |
+| `data/policies/prices.md` | Bike types, rental prices, add-ons, deposits and late return fees. |
+| `data/policies/cancellations.md` | Rules for cancelling or changing a booking, and for refunds. |
+| `data/policies/faq.md` | Answers to common questions: opening hours, age limits, payment, what to do when something goes wrong. |
+| `data/bookings.json` | Example bookings. |
 
 ### Bookings
 

@@ -17,8 +17,8 @@ if __name__ == "__main__":
     embedding_client = EmbeddingsClient(EmbeddingSettings())
     database = QdrantDatabaseClient(QdrantSettings(), embedding_client)
 
-    print(Path(__file__).resolve().parents[1] / "data" / "policies" )
-    policy_path = Path(__file__).resolve().parents[1] / "data" / "policies"
+    print(Path(__file__).resolve().parents[2] / "data" / "policies" )
+    policy_path = Path(__file__).resolve().parents[2] / "data" / "policies"
     for policy_file in policy_path.iterdir():
         add_docs_to_db(policy_file, database, chunker)
 
