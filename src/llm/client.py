@@ -3,6 +3,7 @@ from typing import Any
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import SystemMessage
+from langgraph.checkpoint.memory import InMemorySaver
 
 from src.core.settings import AgentSettings
 from src.database import BaseDatabaseClient
@@ -27,7 +28,7 @@ class AgentClient:
                 SearchPoliciesTool(database=database),
                 GetBookingTool(),
             ],
-
+            checkpointer=InMemorySaver()
         )
 
     def invoke(self, query: str) -> dict[str, Any] | Any:
