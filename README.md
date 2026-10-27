@@ -1,10 +1,32 @@
 # help-desk-agent
 
+## Usage
+
+Before running:
+
+- Ollama running with the models from `.env`: `ollama pull qwen3:4b` and `ollama pull qwen3-embedding:0.6b`
+- Qdrant running: `docker run -d --name qdrant -p 6333:6333 -p 6334:6334 -v qdrant_storage:/qdrant/storage qdrant/qdrant`
+- `.env` created from `.env.example`
+
+```bash
+python main.py                           # show help
+python main.py --update-db               # rebuild the Qdrant collection from data/policies
+python main.py --start-chat              # chat with the agent
+python main.py --update-db --start-chat  # rebuild the collection, then chat
+```
+
+| Option | What it does |
+|---|---|
+| `--update-db` | Deletes the Qdrant collection and loads all files from `data/policies/` again (chunk → embed → store) |
+| `--start-chat` | Starts a chat. Answers are streamed token by token. The agent remembers earlier questions in the same chat |
+
+In the chat, type `/exit` or press Ctrl+C / Ctrl+D to quit. Run `--update-db` once before the first chat, and again after changing the policy files.
+
 ## Code structure
 
 ```
 .
-├── main.py                        # Entry point
+├── main.py                        # CLI: chat with the agent (streaming), rebuild the Qdrant collection
 ├── requirements.txt               # Python dependencies
 ├── .env.example                   # Example environment variables (copy to .env)
 ├── data/                          # Source data for the agent

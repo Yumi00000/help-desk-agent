@@ -20,5 +20,5 @@ class GetBookingTool(BaseTool):
     def _run(self, booking_id: str) -> str:
         booking = self.booking_loader.get_booking_by_id(booking_id)
         if booking is None:
-            return f"Booking {booking_id} not found."
+            return json.dumps({"id": None, "error": f"Booking {booking_id} not found."})
         return json.dumps(booking)
