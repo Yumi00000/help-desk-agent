@@ -1,8 +1,9 @@
-from typing import Any
+from typing import Any, Iterator, Generator
 
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import AIMessageChunk, SystemMessage
+from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
 
 from src.core.settings import AgentSettings
@@ -31,5 +32,17 @@ class AgentClient:
             checkpointer=InMemorySaver()
         )
 
-    def invoke(self, query: str) -> dict[str, Any] | Any:
-        return self.agent.invoke({"messages": [{"role": "user", "content": query}]})
+    def invoke(self, query: str, thread_id: str = "cli") -> dict[str, Any] | Any:
+        return self.agent.invoke(
+            {"messages": [{"role": "user", "content": query}]},
+            config=RunnableConfig(configurable={"thread_id": thread_id}),
+        )
+
+    def stream(self, query: str, thread_id: str = "cli") -> Generator[str | list[str | dict[Any, Any]], Any, None]:
+        for chunk, metadata in self.agent.stream(
+            {"messages": [{"role": "user", "content": query}]},
+            config=RunnableConfig(configurable={"thread_id": thread_id}),
+            stream_mode="messages",
+        ):
+            if isinstance(chunk, AIMessageChunk) and chunk.content:
+                yield chunk.content
