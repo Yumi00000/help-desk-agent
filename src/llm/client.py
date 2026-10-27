@@ -4,11 +4,10 @@ from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import SystemMessage
 
-from src.core.settings import AgentSettings, EmbeddingSettings, QdrantSettings
-from src.database import BaseDatabaseClient, QdrantDatabaseClient
-from src.embeddings import EmbeddingsClient
+from src.core.settings import AgentSettings
+from src.database import BaseDatabaseClient
 from src.prompts import read_system_prompt
-from src.tools import SearchPoliciesTool
+from src.tools import GetBookingTool, SearchPoliciesTool
 
 
 class AgentClient:
@@ -24,7 +23,10 @@ class AgentClient:
         self.agent = create_agent(
             model=self.model,
             system_prompt=SystemMessage(self.system_prompt),
-            tools=[SearchPoliciesTool(database=database)],
+            tools=[
+                SearchPoliciesTool(database=database),
+                GetBookingTool(),
+            ],
 
         )
 

@@ -15,7 +15,7 @@
 │       └── prices.md              # Rental prices and fees
 └── src/
     ├── core/
-    │   └── settings.py            # App settings (Agent, Qdrant, Embedding, Chunk), read from .env
+    │   └── settings.py            # App settings (Agent, Qdrant, Embedding, Chunk, Data), read from .env
     ├── chunker/
     │   └── client.py              # Splits Markdown into chunks by headers
     ├── database/
@@ -30,9 +30,20 @@
     │   └── SYSTEM_PROMPT.md       # System prompt for the agent
     ├── scripts/
     │   └── add_docs_to_db.py      # Adds documents to Qdrant
+    ├── services/
+    │   └── data_management/
+    │       └── load_booking.py    # BookingLoader: reads bookings.json, finds a booking by id
     └── tools/
-        └── search.py              # search_policies tool
+        ├── search.py              # search_policies tool
+        └── get_booking.py         # get_booking tool
 ```
+
+## Agent tools
+
+| Tool | Input | What it returns |
+|---|---|---|
+| `search_policies` | `query` | The most relevant parts of the policy documents (from Qdrant) |
+| `get_booking` | `booking_id`, e.g. `CW-1001` | The details of one booking, or `Booking ... not found.` |
 
 ## Data
 
