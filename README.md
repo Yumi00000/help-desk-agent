@@ -93,6 +93,7 @@ Settings are read from `.env` with `python-decouple`. Put comments on their own 
 | `EMBEDDING_MODEL` | yes | — | Embedding model, e.g. `qwen3-embedding:0.6b` |
 | `EMBEDDING_DIMENSION` | no | `1024` | Vector size, must match the embedding model |
 | `SYSTEM_PROMPT_PATH` | yes | — | Folder with `SYSTEM_PROMPT.md`, relative to the project root, e.g. `src/prompts` |
+| `DATA_PATH` | no | `data` | Folder with `policies/` and `bookings.json`, relative to the project root |
 | `CHUNK_SIZE` | no | `1000` | Max chunk size in characters |
 | `CHUNK_OVERLAP` | no | `0` | Overlap between chunks in characters |
 
@@ -126,6 +127,10 @@ EMBEDDING_DIMENSION=1024
 # Prompts
 # Folder with SYSTEM_PROMPT.md, relative to the project root
 SYSTEM_PROMPT_PATH=src/prompts
+
+# Data
+# Folder with policies/ and bookings.json, relative to the project root
+DATA_PATH=data
 
 # Chunk Settings
 # Max chunk size in characters

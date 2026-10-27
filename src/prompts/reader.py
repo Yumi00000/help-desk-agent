@@ -1,8 +1,4 @@
-from pathlib import Path
-
-from src.core.settings import settings
-
-BASE_DIR = Path(__file__).resolve().parents[2]
+from src.core.settings import BASE_DIR, settings
 
 system_prompt_path = BASE_DIR / settings.system_prompt_path / "SYSTEM_PROMPT.md"
 

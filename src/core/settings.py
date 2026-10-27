@@ -1,5 +1,9 @@
+from pathlib import Path
+
 from decouple import config
 from pydantic_settings import BaseSettings
+
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 
 class AgentSettings(BaseSettings):
@@ -27,12 +31,20 @@ class ChunkSettings(BaseSettings):
     CHUNK_OVERLAP: int = config("CHUNK_OVERLAP", default=0, cast=int)
 
 
+class DataSettings(BaseSettings):
+    """Data settings."""
+    DATA_PATH: Path = BASE_DIR / config("DATA_PATH", default="data")
+    POLICIES_PATH: Path = DATA_PATH / "policies"
+    BOOKINGS_PATH: Path = DATA_PATH / "bookings.json"
+
+
 class Settings:
     """Settings."""
     agent = AgentSettings()
     qdrant = QdrantSettings()
     embedding = EmbeddingSettings()
     chunk = ChunkSettings()
+    data = DataSettings()
     system_prompt_path: str = config("SYSTEM_PROMPT_PATH")
 
 
