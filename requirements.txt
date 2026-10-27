@@ -6,6 +6,6 @@ langchain-qdrant==1.1.0
 pydantic-settings==2.16.1
 pydantic==2.14.1
 
-qdrant-client
-langchain-core
+qdrant-client==1.20.0
+langchain-core==1.7.0
 langchain-ollama==1.1.0
