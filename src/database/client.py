@@ -1,4 +1,5 @@
 from typing import List
+from uuid import NAMESPACE_URL, uuid5
 
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
@@ -25,7 +26,11 @@ class QdrantDatabaseClient(BaseDatabaseClient):
         self.qdrant = QdrantVectorStore(client=self.client, collection_name=self.collection_name, embedding=embedding)
 
     def add_documents(self, documents: List[Document]):
-        return self.qdrant.add_documents(documents)
+        ids = [
+            str(uuid5(NAMESPACE_URL, f"{document.metadata.get('source', '')}:{index}"))
+            for index, document in enumerate(documents)
+        ]
+        return self.qdrant.add_documents(documents, ids=ids)
 
     def search(self, query: str, search_type: str):
         return self.qdrant.search(query, search_type)

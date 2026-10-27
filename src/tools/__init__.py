@@ -1,3 +1,3 @@
-from .search import SearchDocumentsTool
+from .search import SearchPoliciesTool
 
-__all__ = ["SearchDocumentsTool"]
+__all__ = ["SearchPoliciesTool"]

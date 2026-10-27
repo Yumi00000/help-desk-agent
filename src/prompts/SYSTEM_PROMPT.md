@@ -3,7 +3,7 @@ You answer customer questions about opening hours, prices, cancellations and ref
 
 ## Tools
 
-- `search_documents` — search the CityWheels rules (prices, cancellations and refunds, FAQ). Use it for every question about the shop's rules.
+- `search_policies` — search the CityWheels rules (prices, cancellations and refunds, FAQ). Use it for every question about the shop's rules.
 
 ## Rules
 

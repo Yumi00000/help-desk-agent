@@ -25,14 +25,56 @@
     ├── scripts/
     │   └── add_docs_to_db.py      # Adds documents to Qdrant
     ├── tools/
-    │   └── search.py              # search_documents tool
-    └── assignments-docs/          # Source data for the agent
+    │   └── search.py              # search_policies tool
+    └── data/                      # Source data for the agent
         ├── bookings.json          # Sample bike rental bookings
         └── policies/
             ├── cancellations.md   # Cancellation and refund rules
             ├── faq.md             # Frequently asked questions
             └── prices.md          # Rental prices and fees
 ```
+
+## Data
+
+CityWheels is a made-up bike rental shop. These files hold the data for its help desk agent.
+
+| File | What it holds |
+| --- | --- |
+| `src/data/policies/prices.md` | Bike types, rental prices, add-ons, deposits and late return fees. |
+| `src/data/policies/cancellations.md` | Rules for cancelling or changing a booking, and for refunds. |
+| `src/data/policies/faq.md` | Answers to common questions: opening hours, age limits, payment, what to do when something goes wrong. |
+| `src/data/bookings.json` | Example bookings. |
+
+### Bookings
+
+Each booking in `bookings.json` has these fields:
+
+| Field | Meaning |
+| --- | --- |
+| `id` | Booking number, for example `CW-1001`. |
+| `status` | `confirmed`, `in_progress`, `completed` or `cancelled`. |
+| `bike_type` | `city`, `e-bike` or `kids`. |
+| `bikes` | How many bikes are booked. |
+| `start`, `end` | When the rental starts and ends, with the time zone. |
+| `add_ons` | Extras, such as `child_seat`. |
+| `rental_price_eur` | Price of the rental itself, with add-ons. |
+| `booking_fee_eur` | Fee for booking online. |
+| `deposit_eur` | Deposit paid with the booking. |
+| `paid_with` | `card` or `voucher`. |
+
+### The current date
+
+The bookings are set in June 2026. So that answers are the same every time, treat the current date and time as:
+
+**2026-06-10 09:00, Europe/Warsaw time (UTC+02:00).**
+
+### Example questions
+
+- What time do you open on Saturday?
+- How much is an e-bike for a whole day?
+- I want to cancel booking CW-1002. How much will I get back?
+- Can my 14-year-old rent an e-bike?
+- What is the capital of Australia?
 
 ## Environment variables
 

@@ -4,14 +4,14 @@ from langchain_core.tools import BaseTool
 from src.database import BaseDatabaseClient
 
 
-class SearchDocumentsInput(BaseModel):
+class SearchPoliciesInput(BaseModel):
     query: str = Field(description="What to search for in the documents")
 
 
-class SearchDocumentsTool(BaseTool):
-    name: str = "search_documents"
+class SearchPoliciesTool(BaseTool):
+    name: str = "search_policies"
     description: str = "Search documents in the knowledge base and return the most relevant text."
-    args_schema: type[BaseModel] = SearchDocumentsInput
+    args_schema: type[BaseModel] = SearchPoliciesInput
     database: BaseDatabaseClient
 
     def _run(self, query: str) -> str:

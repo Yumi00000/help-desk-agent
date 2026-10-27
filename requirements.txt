@@ -1,7 +1,6 @@
 
 python-decouple==3.8
 langchain==1.4.7
-langchain-anthropic==1.7.6
 langchain-qdrant==1.1.0
 pydantic-settings==2.16.1
 pydantic==2.14.1
